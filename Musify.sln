@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{79E99902-F5C9-4830-8DC5-DECE6A5BA63B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{91FAF3E8-3C79-4908-9BA5-7F5565D48D54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Musify.MVC", "Musify.MVC\Musify.MVC.csproj", "{718F0010-63D5-4FFA-A61C-CE09ADB992F5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{718F0010-63D5-4FFA-A61C-CE09ADB992F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{718F0010-63D5-4FFA-A61C-CE09ADB992F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{718F0010-63D5-4FFA-A61C-CE09ADB992F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{718F0010-63D5-4FFA-A61C-CE09ADB992F5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{718F0010-63D5-4FFA-A61C-CE09ADB992F5} = {79E99902-F5C9-4830-8DC5-DECE6A5BA63B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {259A104A-E537-4A5E-A891-7363EBEFA8CB}
+	EndGlobalSection
+EndGlobal

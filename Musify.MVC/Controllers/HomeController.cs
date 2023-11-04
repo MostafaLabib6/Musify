@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Musify.MVC.Models;
+using Musify.MVC.Models.ModelViews.SongModelView;
+using Musify.MVC.Persistance;
 using System.Diagnostics;
 
 namespace Musify.MVC.Controllers
@@ -7,16 +10,19 @@ namespace Musify.MVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IALLForOne _allForOne;
+        private readonly IMapper _mapper;
+        public HomeController(ILogger<HomeController> logger, IALLForOne aLLForOne, IMapper mapper)
         {
             _logger = logger;
+            _allForOne = aLLForOne;
+            _mapper = mapper;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-
-            return View();
+            var songs = await _allForOne.SongRepository.GetLatestReleased6Songs();
+            return View(_mapper.Map<SongViewModel>(songs));
         }
 
         public IActionResult Privacy()

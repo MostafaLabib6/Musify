@@ -1,4 +1,6 @@
-﻿using Musify.MVC.Models.Common;
+﻿using Microsoft.AspNetCore.Identity;
+using Musify.MVC.Data;
+using Musify.MVC.Models.Common;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Musify.MVC.Models.Entities;

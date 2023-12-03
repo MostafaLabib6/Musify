@@ -5,66 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Musify.MVC.Migrations
 {
-    public partial class AddIdentity : Migration
+    public partial class initcreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Author_Author_AuthorId",
-                table: "Author");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Playlists_Author_PlayListId",
-                table: "Playlists");
-
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_Author",
-                table: "Author");
-
-            migrationBuilder.DropColumn(
-                name: "Shuffle",
-                table: "Songs");
-
-            migrationBuilder.RenameTable(
-                name: "Author",
-                newName: "Authors");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_Author_AuthorId",
-                table: "Authors",
-                newName: "IX_Authors_AuthorId");
-
-            migrationBuilder.AddColumn<bool>(
-                name: "Shuffle",
-                table: "Playlists",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "AlbumId",
-                table: "Authors",
-                type: "uniqueidentifier",
-                nullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "Discriminator",
-                table: "Authors",
-                type: "nvarchar(max)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "SongId",
-                table: "Authors",
-                type: "uniqueidentifier",
-                nullable: true);
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_Authors",
-                table: "Authors",
-                column: "Id");
-
             migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
@@ -84,6 +28,9 @@ namespace Musify.MVC.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FollowersCount = table.Column<int>(type: "int", nullable: false),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -102,6 +49,11 @@ namespace Musify.MVC.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -123,6 +75,24 @@ namespace Musify.MVC.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Albums",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ArtistId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Albums", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Albums_AspNetUsers_ArtistId",
+                        column: x => x.ArtistId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -210,10 +180,90 @@ namespace Musify.MVC.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Playlists",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AuthorId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IsPublic = table.Column<bool>(type: "bit", nullable: false),
+                    Shuffle = table.Column<bool>(type: "bit", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Playlists", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Playlists_AspNetUsers_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Songs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Audio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Video = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReleaseAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Likes = table.Column<int>(type: "int", nullable: false),
+                    Tag = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    AlbumId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PlaylistId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Songs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Songs_Albums_AlbumId",
+                        column: x => x.AlbumId,
+                        principalTable: "Albums",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Songs_Playlists_PlaylistId",
+                        column: x => x.PlaylistId,
+                        principalTable: "Playlists",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ArtistSong",
+                columns: table => new
+                {
+                    ArtistsId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SongsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ArtistSong", x => new { x.ArtistsId, x.SongsId });
+                    table.ForeignKey(
+                        name: "FK_ArtistSong_AspNetUsers_ArtistsId",
+                        column: x => x.ArtistsId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ArtistSong_Songs_SongsId",
+                        column: x => x.SongsId,
+                        principalTable: "Songs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_Authors_AlbumId",
-                table: "Authors",
-                column: "AlbumId");
+                name: "IX_Albums_ArtistId",
+                table: "Albums",
+                column: "ArtistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ArtistSong_SongsId",
+                table: "ArtistSong",
+                column: "SongsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -248,60 +298,42 @@ namespace Musify.MVC.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_UserId",
+                table: "AspNetUsers",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Authors_Albums_AlbumId",
-                table: "Authors",
-                column: "AlbumId",
-                principalTable: "Albums",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Authors_Authors_AuthorId",
-                table: "Authors",
-                column: "AuthorId",
-                principalTable: "Authors",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Playlists_Authors_PlayListId",
+            migrationBuilder.CreateIndex(
+                name: "IX_Playlists_AuthorId",
                 table: "Playlists",
-                column: "PlayListId",
-                principalTable: "Authors",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                column: "AuthorId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Songs_Authors_SongId",
+            migrationBuilder.CreateIndex(
+                name: "IX_Songs_AlbumId",
                 table: "Songs",
-                column: "SongId",
-                principalTable: "Authors",
-                principalColumn: "Id");
+                column: "AlbumId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Songs_PlaylistId",
+                table: "Songs",
+                column: "PlaylistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Songs_ReleaseAt",
+                table: "Songs",
+                column: "ReleaseAt");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Authors_Albums_AlbumId",
-                table: "Authors");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Authors_Authors_AuthorId",
-                table: "Authors");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Playlists_Authors_PlayListId",
-                table: "Playlists");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Songs_Authors_SongId",
-                table: "Songs");
+            migrationBuilder.DropTable(
+                name: "ArtistSong");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
@@ -319,70 +351,19 @@ namespace Musify.MVC.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Songs");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Albums");
+
+            migrationBuilder.DropTable(
+                name: "Playlists");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
-
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_Authors",
-                table: "Authors");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Authors_AlbumId",
-                table: "Authors");
-
-            migrationBuilder.DropColumn(
-                name: "Shuffle",
-                table: "Playlists");
-
-            migrationBuilder.DropColumn(
-                name: "AlbumId",
-                table: "Authors");
-
-            migrationBuilder.DropColumn(
-                name: "Discriminator",
-                table: "Authors");
-
-            migrationBuilder.DropColumn(
-                name: "SongId",
-                table: "Authors");
-
-            migrationBuilder.RenameTable(
-                name: "Authors",
-                newName: "Author");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_Authors_AuthorId",
-                table: "Author",
-                newName: "IX_Author_AuthorId");
-
-            migrationBuilder.AddColumn<bool>(
-                name: "Shuffle",
-                table: "Songs",
-                type: "bit",
-                nullable: false,
-                defaultValue: false);
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_Author",
-                table: "Author",
-                column: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Author_Author_AuthorId",
-                table: "Author",
-                column: "AuthorId",
-                principalTable: "Author",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Playlists_Author_PlayListId",
-                table: "Playlists",
-                column: "PlayListId",
-                principalTable: "Author",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Musify.MVC.Data;
 
@@ -11,9 +12,10 @@ using Musify.MVC.Data;
 namespace Musify.MVC.Migrations
 {
     [DbContext(typeof(MusifyDbContext))]
-    partial class MusifyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231105114746_initcreate")]
+    partial class initcreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +23,21 @@ namespace Musify.MVC.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("ArtistSong", b =>
+                {
+                    b.Property<string>("ArtistsId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("SongsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ArtistsId", "SongsId");
+
+                    b.HasIndex("SongsId");
+
+                    b.ToTable("ArtistSong");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -72,71 +89,6 @@ namespace Musify.MVC.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -226,48 +178,18 @@ namespace Musify.MVC.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ArtistId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("SongId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("ArtistId");
 
                     b.ToTable("Albums");
-                });
-
-            modelBuilder.Entity("Musify.MVC.Models.Entities.Author", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("AuthorId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("FollowersCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("PlayListId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.ToTable("Authors");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Author");
                 });
 
             modelBuilder.Entity("Musify.MVC.Models.Entities.Playlist", b =>
@@ -276,6 +198,9 @@ namespace Musify.MVC.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("AuthorId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
 
@@ -283,18 +208,12 @@ namespace Musify.MVC.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("PlayListId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<bool>("Shuffle")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("SongId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("PlayListId");
+                    b.HasIndex("AuthorId");
 
                     b.ToTable("Playlists");
                 });
@@ -305,7 +224,7 @@ namespace Musify.MVC.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ArtistId")
+                    b.Property<Guid?>("AlbumId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Audio")
@@ -323,11 +242,11 @@ namespace Musify.MVC.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("PlaylistId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("ReleaseAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("SongId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Tag")
                         .HasColumnType("int");
@@ -341,26 +260,114 @@ namespace Musify.MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ReleaseAt");
+                    b.HasIndex("AlbumId");
 
-                    b.HasIndex("SongId");
+                    b.HasIndex("PlaylistId");
+
+                    b.HasIndex("ReleaseAt");
 
                     b.ToTable("Songs");
                 });
 
+            modelBuilder.Entity("Musify.MVC.Models.Entities.User", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("FollowersCount")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("User");
+                });
+
             modelBuilder.Entity("Musify.MVC.Models.Entities.Artist", b =>
                 {
-                    b.HasBaseType("Musify.MVC.Models.Entities.Author");
-
-                    b.Property<Guid>("AlbumId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SongId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasIndex("AlbumId");
+                    b.HasBaseType("Musify.MVC.Models.Entities.User");
 
                     b.HasDiscriminator().HasValue("Artist");
+                });
+
+            modelBuilder.Entity("ArtistSong", b =>
+                {
+                    b.HasOne("Musify.MVC.Models.Entities.Artist", null)
+                        .WithMany()
+                        .HasForeignKey("ArtistsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Musify.MVC.Models.Entities.Song", null)
+                        .WithMany()
+                        .HasForeignKey("SongsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -374,7 +381,7 @@ namespace Musify.MVC.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Musify.MVC.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -383,7 +390,7 @@ namespace Musify.MVC.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Musify.MVC.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -398,7 +405,7 @@ namespace Musify.MVC.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Musify.MVC.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -407,27 +414,25 @@ namespace Musify.MVC.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
+                    b.HasOne("Musify.MVC.Models.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Musify.MVC.Models.Entities.Author", b =>
+            modelBuilder.Entity("Musify.MVC.Models.Entities.Album", b =>
                 {
-                    b.HasOne("Musify.MVC.Models.Entities.Author", null)
-                        .WithMany("Followers")
-                        .HasForeignKey("AuthorId");
+                    b.HasOne("Musify.MVC.Models.Entities.Artist", null)
+                        .WithMany("Albums")
+                        .HasForeignKey("ArtistId");
                 });
 
             modelBuilder.Entity("Musify.MVC.Models.Entities.Playlist", b =>
                 {
-                    b.HasOne("Musify.MVC.Models.Entities.Author", "Author")
+                    b.HasOne("Musify.MVC.Models.Entities.User", "Author")
                         .WithMany("Playlists")
-                        .HasForeignKey("PlayListId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AuthorId");
 
                     b.Navigation("Author");
                 });
@@ -436,26 +441,18 @@ namespace Musify.MVC.Migrations
                 {
                     b.HasOne("Musify.MVC.Models.Entities.Album", null)
                         .WithMany("Songs")
-                        .HasForeignKey("SongId");
-
-                    b.HasOne("Musify.MVC.Models.Entities.Artist", null)
-                        .WithMany("Songs")
-                        .HasForeignKey("SongId");
+                        .HasForeignKey("AlbumId");
 
                     b.HasOne("Musify.MVC.Models.Entities.Playlist", null)
                         .WithMany("Songs")
-                        .HasForeignKey("SongId");
+                        .HasForeignKey("PlaylistId");
                 });
 
-            modelBuilder.Entity("Musify.MVC.Models.Entities.Artist", b =>
+            modelBuilder.Entity("Musify.MVC.Models.Entities.User", b =>
                 {
-                    b.HasOne("Musify.MVC.Models.Entities.Album", "Album")
-                        .WithMany()
-                        .HasForeignKey("AlbumId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Album");
+                    b.HasOne("Musify.MVC.Models.Entities.User", null)
+                        .WithMany("Followers")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Musify.MVC.Models.Entities.Album", b =>
@@ -463,21 +460,21 @@ namespace Musify.MVC.Migrations
                     b.Navigation("Songs");
                 });
 
-            modelBuilder.Entity("Musify.MVC.Models.Entities.Author", b =>
+            modelBuilder.Entity("Musify.MVC.Models.Entities.Playlist", b =>
+                {
+                    b.Navigation("Songs");
+                });
+
+            modelBuilder.Entity("Musify.MVC.Models.Entities.User", b =>
                 {
                     b.Navigation("Followers");
 
                     b.Navigation("Playlists");
                 });
 
-            modelBuilder.Entity("Musify.MVC.Models.Entities.Playlist", b =>
-                {
-                    b.Navigation("Songs");
-                });
-
             modelBuilder.Entity("Musify.MVC.Models.Entities.Artist", b =>
                 {
-                    b.Navigation("Songs");
+                    b.Navigation("Albums");
                 });
 #pragma warning restore 612, 618
         }

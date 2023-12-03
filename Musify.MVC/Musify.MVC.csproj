@@ -17,4 +17,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Infrastructure\IdentityService\" />
+    <Folder Include="Infrastructure\UploadAudioService\" />
+    <Folder Include="Infrastructure\UploadImageService\" />
+  </ItemGroup>
+
 </Project>

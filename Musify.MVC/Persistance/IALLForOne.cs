@@ -2,12 +2,13 @@
 
 namespace Musify.MVC.Persistance;
 
-public interface IALLForOne
+public interface IALLForOne : IDisposable
 {
-    public IAlbumRepository AlbumRepository { get; set; }
-    public IArtistRepository ArtistRepository { get; set; }
-    public IAuthorRepository AuthorRepository { get; set; }
-    public IPlaylistRepository PlaylistRepository { get; set; }
-    public ISongRepository SongRepository { get; set; }
+    public IAlbumRepository AlbumRepository { get; }
+    public IArtistRepository ArtistRepository { get; }
+    public IAuthorRepository AuthorRepository { get; }
+    public IPlaylistRepository PlaylistRepository { get; }
+    public ISongRepository SongRepository { get; }
+
 
 }

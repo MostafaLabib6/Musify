@@ -29,6 +29,9 @@ namespace Musify.MVC.Data
                 ReleaseAt = DateTime.Now,
                 Tag=Tag.Rap,
                 Type=Models.Entities.Type.Arabic,
+                Audio = "https://www.youtube.com/watch?v=SJQCRuzqQvU&ab_channel=Lege-Cy",
+                Video = "https://www.youtube.com/watch?v=SJQCRuzqQvU&ab_channel=Lege-Cy",
+                Image ="https://www.youtube.com/watch?v=SJQCRuzqQvU&ab_channel=Lege-Cy",
 
                 },
             new Song {
@@ -36,12 +39,18 @@ namespace Musify.MVC.Data
                 ReleaseAt = DateTime.Now,
                 Tag=Tag.Rap,
                 Type=Models.Entities.Type.Arabic,
+                Audio = "https://www.youtube.com/watch?v=SJQCRuzqQvU&ab_channel=Lege-Cy",
+                Video = "https://www.youtube.com/watch?v=SJQCRuzqQvU&ab_channel=Lege-Cy",
+                Image ="https://www.youtube.com/watch?v=SJQCRuzqQvU&ab_channel=Lege-Cy",
                 },
              new Song {
                 Name="Plan b",
                 ReleaseAt = DateTime.Now,
                 Tag=Tag.Rap,
                 Type=Models.Entities.Type.Arabic,
+                Audio = "https://www.youtube.com/watch?v=SJQCRuzqQvU&ab_channel=Lege-Cy",
+                Video = "https://www.youtube.com/watch?v=SJQCRuzqQvU&ab_channel=Lege-Cy",
+                Image ="https://www.youtube.com/watch?v=SJQCRuzqQvU&ab_channel=Lege-Cy",
                 },
         };
         public static void PopulateData(IApplicationBuilder app)
@@ -61,7 +70,7 @@ namespace Musify.MVC.Data
                         Followers = Authors,
                         FollowersCount = Authors.Count,
                         Albums = new List<Album>() { Album },
-                        Songs = Songs,
+                        Songs = Songs
                     });
                 context.Albums.AddRange(
                     new List<Album> { Album });

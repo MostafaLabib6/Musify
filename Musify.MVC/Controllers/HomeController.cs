@@ -9,12 +9,13 @@ namespace Musify.MVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        //private readonly ILogger<HomeController> _logger;
         private readonly IALLForOne _allForOne;
         private readonly IMapper _mapper;
-        public HomeController(ILogger<HomeController> logger, IALLForOne aLLForOne, IMapper mapper)
+        public HomeController(//ILogger<HomeController> logger,
+            IALLForOne aLLForOne, IMapper mapper)
         {
-            _logger = logger;
+            //_logger = logger;
             _allForOne = aLLForOne;
             _mapper = mapper;
         }
@@ -22,7 +23,13 @@ namespace Musify.MVC.Controllers
         public async Task<IActionResult> Index()
         {
             var songs = await _allForOne.SongRepository.GetLatestReleased6Songs();
-            return View(_mapper.Map<SongViewModel>(songs));
+
+            var entity = _mapper.Map<List<SongViewModel>>(songs);
+
+            for (var i = 0; i < songs.Count(); ++i)
+                entity[i].Artist = songs[i].Artists.ToList();
+
+            return View(entity);
         }
 
         public IActionResult Privacy()

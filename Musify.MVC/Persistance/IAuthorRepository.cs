@@ -2,8 +2,8 @@
 
 namespace Musify.MVC.Repositories
 {
-    public interface IAuthorRepository:IGenaricRepository<Author>
+    public interface IAuthorRepository:IGenaricRepository<User>
     {
-        public Task<Author> GetAuthorFollowers(Guid id);
+        public Task<User> GetAuthorFollowers(Guid id);
     }
 }

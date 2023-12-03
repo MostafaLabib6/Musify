@@ -5,7 +5,5 @@ namespace Musify.MVC.Models.Entities;
 
 public class Album : BaseEntity
 {
-    [ForeignKey(nameof(SongId))]
-    public ICollection<Song> Songs { get; set; }
-    public Guid SongId { get; set; }
+    public ICollection<Song> Songs { get; set; } = new List<Song>();
 }

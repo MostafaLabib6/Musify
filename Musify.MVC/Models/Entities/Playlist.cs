@@ -5,11 +5,10 @@ namespace Musify.MVC.Models.Entities;
 
 public class Playlist : BaseEntity
 {
-    public Author Author { get; set; } //author == user
+    
+    public User Author { get; set; } = new();
     public bool IsPublic { get; set; }
     public bool Shuffle { get; set; }
-    public Guid SongId { get; set; }
-    [ForeignKey(nameof(SongId))]
-    public ICollection<Song> Songs { get; set; }
+    public ICollection<Song> Songs { get; set; } = new List<Song>();
 
 }

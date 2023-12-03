@@ -2,11 +2,8 @@
 
 namespace Musify.MVC.Models.Entities;
 
-public class Artist : Author
+public class Artist : User
 {
-    public Guid SongId { get; set; }
-
-    [ForeignKey(nameof(SongId))]
-    public ICollection<Song> Songs { get; set; }
-    public Album Album { get; set; }
+    public ICollection<Song> Songs { get; set; } = new List<Song>();
+    public ICollection<Album> Albums { get; set; } = new List<Album>();
 }

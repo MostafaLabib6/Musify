@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Musify.MVC.Infrastructure.MailService;
 using Musify.MVC.Models;
 using Musify.MVC.Models.ModelViews.SongModelView;
 using Musify.MVC.Persistance;
@@ -12,12 +13,14 @@ namespace Musify.MVC.Controllers
         //private readonly ILogger<HomeController> _logger;
         private readonly IALLForOne _allForOne;
         private readonly IMapper _mapper;
+        private readonly IEmailService _emailService;
         public HomeController(//ILogger<HomeController> logger,
-            IALLForOne aLLForOne, IMapper mapper)
+            IALLForOne aLLForOne, IMapper mapper, IEmailService emailService)
         {
             //_logger = logger;
             _allForOne = aLLForOne;
             _mapper = mapper;
+            _emailService = emailService;
         }
 
         public async Task<IActionResult> Index()
@@ -26,8 +29,15 @@ namespace Musify.MVC.Controllers
 
             var entity = _mapper.Map<List<SongViewModel>>(songs);
 
-            //for (var i = 0; i < songs.Count(); ++i)
-            //    entity[i].Artist = songs[i].Artists.ToList();
+            var email = new Email
+            {
+                Body="Lege-Cy Released new Album with 3 Songs... Huary up to Listen",
+                Subject ="The Latest Released Songs Now Available",
+                To="mostafa.ashraf500030@gmail.com",
+            };
+            await _emailService.SendEmail(email);
+
+
 
             return View(entity);
         }

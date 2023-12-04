@@ -1,4 +1,5 @@
-﻿using Musify.MVC.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Musify.MVC.Data;
 using Musify.MVC.Models.Entities;
 
 namespace Musify.MVC.Repositories
@@ -11,9 +12,12 @@ namespace Musify.MVC.Repositories
         {
             _dbContext = dbContext;
         }
-        public Task<User> GetAuthorFollowers(Guid id)
+        public async Task<User> GetAuthorFollowers(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Users
+                .Include(x => x.Followers)
+                .FirstOrDefaultAsync(x => x.Id == id.ToString())
+                ?? throw new ArgumentNullException("Author not Found");
         }
     }
 }

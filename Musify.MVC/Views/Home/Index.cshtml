@@ -14,7 +14,11 @@
     @foreach (var song in Model)
     {
         <h1>@song.Name</h1>
-        <h3>@song.Artist[0].UserName</h3>
+        @foreach(var artist in song.Artists)
+        {
+            <h4>@artist.UserName</h4>
+            <h4>@artist.Songs</h4>
+        }
     }
 
 </div>

@@ -12,14 +12,20 @@ namespace Musify.MVC.Repositories
         {
             _dbContext = dbContext;
         }
-        public Task<Artist> GetArtistWithAlbum(Guid id)
+        public async Task<Artist> GetArtistWithAlbum(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Artists
+                .Include(x => x.Albums)
+                .FirstOrDefaultAsync(x => x.Id == id.ToString())
+                ?? throw new ArgumentNullException("Artist Not found");
         }
 
-        public Task<Artist> GetArtistWithSongs(Guid id)
+        public async Task<Artist> GetArtistWithSongs(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Artists
+                .Include(x => x.Songs)
+                .FirstOrDefaultAsync(x => x.Id == id.ToString())
+                ?? throw new ArgumentNullException("Artist Not found");
         }
     }
 }

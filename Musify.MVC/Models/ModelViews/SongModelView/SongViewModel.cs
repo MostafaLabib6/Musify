@@ -8,6 +8,5 @@ public class SongViewModel
     public Guid Id { get; set; }
     public string Name { get; set; }
     public string Audio { get; set; }
-    public List<Artist> Artist { get; set; }
+    public List<Artist> Artists { get; set; }
 }
-// list ->

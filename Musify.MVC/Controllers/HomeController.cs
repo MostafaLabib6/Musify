@@ -26,8 +26,8 @@ namespace Musify.MVC.Controllers
 
             var entity = _mapper.Map<List<SongViewModel>>(songs);
 
-            for (var i = 0; i < songs.Count(); ++i)
-                entity[i].Artist = songs[i].Artists.ToList();
+            //for (var i = 0; i < songs.Count(); ++i)
+            //    entity[i].Artist = songs[i].Artists.ToList();
 
             return View(entity);
         }

@@ -8,6 +8,7 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<Song, SongViewModel>().ReverseMap();
+        CreateMap<Song, SongViewModel>()
+            .ForMember(dest => dest.Artists, opt => opt.MapFrom(src => src.Artists));
     }
 }

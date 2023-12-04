@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Musify.MVC.Models.Entities;
+﻿namespace Musify.MVC.Models.Entities;
 
 public class Artist : User
 {

@@ -15,12 +15,15 @@ namespace Musify.MVC.Repositories
 
         public async Task<List<Song>> GetLatestReleased6Songs()
         {
-            return await _dbContext.Songs.OrderByDescending(s => s.ReleaseAt).Take(6).Include(x => x.Artists).ToListAsync();
+            return await _dbContext.Songs.OrderByDescending(s => s.ReleaseAt).Include(x => x.Artists).Take(6).ToListAsync();
         }
 
-        public Task<Song> GetSongWithArtist(Guid id)
+        public async Task<Song> GetSongWithArtist(Guid id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Songs.
+                Include(x => x.Artists).
+                FirstOrDefaultAsync(x => x.Id == id)
+                ?? throw new ArgumentNullException("Song not Found");
         }
 
     }

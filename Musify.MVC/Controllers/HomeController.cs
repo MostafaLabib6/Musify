@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Musify.MVC.Infrastructure.MailService;
 using Musify.MVC.Models;
@@ -22,20 +23,20 @@ namespace Musify.MVC.Controllers
             _mapper = mapper;
             _emailService = emailService;
         }
-
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var songs = await _allForOne.SongRepository.GetLatestReleased6Songs();
 
             var entity = _mapper.Map<List<SongViewModel>>(songs);
 
-            var email = new Email
-            {
-                Body="Lege-Cy Released new Album with 3 Songs... Huary up to Listen",
-                Subject ="The Latest Released Songs Now Available",
-                To="mostafa.ashraf500030@gmail.com",
-            };
-            await _emailService.SendEmail(email);
+            //var email = new Email
+            //{
+            //    Body="Lege-Cy Released new Album with 3 Songs... Huary up to Listen",
+            //    Subject ="The Latest Released Songs Now Available",
+            //    To="mostafa.ashraf500030@gmail.com",
+            //};
+            //await _emailService.SendEmail(email);
 
 
 

@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Musify.MVC.Infrastructure.IdentityService;
+using Musify.MVC.Infrastructure.MailService;
 using Musify.MVC.Models.DTOs;
+
 
 namespace Musify.MVC.Controllers
 {
@@ -10,10 +12,12 @@ namespace Musify.MVC.Controllers
     {
         private readonly IAuthenticationService _authenticationService;
         private readonly Serilog.ILogger _logger;
-        public AccountController(IAuthenticationService authenticationService, Serilog.ILogger logger)
+        private readonly IEmailService _emailService;
+        public AccountController(IAuthenticationService authenticationService, Serilog.ILogger logger, IEmailService emailService)
         {
             _authenticationService = authenticationService;
             _logger = logger;
+            _emailService = emailService;
         }
 
         public IActionResult Login()
@@ -48,10 +52,42 @@ namespace Musify.MVC.Controllers
             model.Role = RoleEnum.User;
             var result = await _authenticationService.Register(model);
 
-            return View("RegisterComplete", result);
+            if (!result.Success)
+            {
+                return View(model);
+            }
+            var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = result.UserId, token = result.Token }, Request.Scheme);
+            var email = new Email()
+            {
+                Subject = "Confirm your Email (musify)",
+                Body = confirmationLink!,
+                To = model.Email,
+            };
+            await _emailService.SendEmail(email);
+            return View(model);
 
         }
 
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            var user = await _authenticationService.FindById(userId!);
+
+            if (user == null)
+            {
+                // Handle user not 
+            }
+
+            var result = await _authenticationService.ConfirmEmail(user, token);
+
+            if (!result.Success)
+            {
+                await _authenticationService.DeleteUser(userId!);
+                return RedirectToAction(nameof(Register));
+            }
+            return RedirectToAction(nameof(Index), "Home");
+
+        }
         [Authorize]
         public async Task<IActionResult> Logout()
         {

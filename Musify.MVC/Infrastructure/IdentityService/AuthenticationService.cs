@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Musify.MVC.Models.DTOs;
 using Musify.MVC.Models.Entities;
+
 namespace Musify.MVC.Infrastructure.IdentityService
 {
     public class AuthenticationService : IAuthenticationService
@@ -42,6 +42,37 @@ namespace Musify.MVC.Infrastructure.IdentityService
             return result;
         }
 
+        public async Task<Result> ConfirmEmail(User user, string token)
+        {
+            var result = new Result();
+            var identity = await _userManager.ConfirmEmailAsync(user, token);
+            result.Success = identity.Succeeded;
+            result.Message = (identity.Succeeded) ? "" : "Not confirmed..";
+            return result;
+        }
+
+        public async Task<bool> DeleteUser(string userId)
+        {
+            var user = await FindById(userId);
+            var identityResult = await _userManager.DeleteAsync(user);
+            return identityResult.Succeeded;
+        }
+
+        public async Task<User> FindById(string userId)
+        {
+            return await _userManager.FindByIdAsync(userId);
+        }
+
+        public Task<Result> ForgetPassword(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<string> GenerateToken(User user)
+        {
+            return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+        }
+
         public async Task<Result> Login(LoginModel loginModel)
         {
             var result = new Result();
@@ -72,6 +103,11 @@ namespace Musify.MVC.Infrastructure.IdentityService
             await _signInManager.SignOutAsync();
         }
 
+        public Task<Result> Profile(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Result> Register(RegistrationModel registrationModel)
         {
             var result = new Result();
@@ -90,7 +126,8 @@ namespace Musify.MVC.Infrastructure.IdentityService
             {
                 UserName = registrationModel.UserName,
                 Email = registrationModel.Email,
-                SecurityStamp = new Guid().ToString()
+                SecurityStamp = new Guid().ToString(),
+
             };
             // Create role if the passed role is not exist.
             //if (!await _roleManager.RoleExistsAsync(registrationModel.Role.ToString()))
@@ -99,6 +136,7 @@ namespace Musify.MVC.Infrastructure.IdentityService
             //    await _userManager.AddToRoleAsync(user, registrationModel.Role.ToString());
 
             var isCreated = await _userManager.CreateAsync(user, registrationModel.Password);
+            var token = await GenerateToken(user);
 
             if (!isCreated.Succeeded)
             {
@@ -108,6 +146,8 @@ namespace Musify.MVC.Infrastructure.IdentityService
             }
             result.Success = true;
             result.Message = "Registar Successfully..";
+            result.Token = token;
+            result.UserId = new Guid(user.Id);
             return result;
         }
     }
